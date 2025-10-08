@@ -37,7 +37,7 @@ jobs:
           terraform_version: 1.9.5
 
       - name: Terraform init
-        run: terraform init -backend-config=backend.hcl
+        run: terraform init -backend-config=backend.hcl -reconfigure
 
       - name: Terraform fmt
         run: terraform fmt -check
