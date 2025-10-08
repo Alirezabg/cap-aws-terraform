@@ -5,7 +5,7 @@ variable "region" {
 }
 
 resource "aws_s3_bucket" "frontend_web" {
-  bucket = "onlineShop-cap-frontend-web-${var.region}"
+  bucket = "onlineshop-cap-frontend-web-${var.region}"
 }
 
 resource "aws_s3_bucket_public_access_block" "frontend_web" {
