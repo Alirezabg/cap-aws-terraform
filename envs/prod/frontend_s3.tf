@@ -1,14 +1,10 @@
-variable "project" {
-  type = string
-}
-
 variable "region" {
   type    = string
   default = "eu-west-2"
 }
 
 resource "aws_s3_bucket" "frontend_web" {
-  bucket = "${var.project}-frontend-web-${var.region}"
+  bucket = "OnlineShop-frontend-web-${var.region}"
 }
 
 resource "aws_s3_bucket_public_access_block" "frontend_web" {
