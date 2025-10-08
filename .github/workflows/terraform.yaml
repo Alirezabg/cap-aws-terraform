@@ -37,7 +37,7 @@ jobs:
           terraform_version: 1.9.5
 
       - name: Terraform init
-        run: terraform init -backend-config=backend.hcl -reconfigure
+        run: terraform init -backend-config=backend.hcl
 
       - name: Terraform validate
         run: terraform validate
