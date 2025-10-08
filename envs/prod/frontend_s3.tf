@@ -1,3 +1,4 @@
+# s3 for frontend
 variable "region" {
   type    = string
   default = "eu-west-2"
