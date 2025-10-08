@@ -1,0 +1,54 @@
+name: Terraform (prod)
+
+on:
+  push:
+    branches: [ main ]
+    paths:
+      - "envs/prod/**"
+      - ".github/workflows/terraform.yml"
+  pull_request:
+    branches: [ main ]
+    paths:
+      - "envs/prod/**"
+
+permissions:
+  id-token: write   
+  contents: read
+
+jobs:
+  tf:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: envs/prod
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Configure AWS credentials (OIDC)
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: arn:aws:iam::895636586366:role/github-oidc-terraform
+          aws-region: eu-west-2
+
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v3
+        with:
+          terraform_version: 1.9.5
+
+      - name: Terraform init
+        run: terraform init -backend-config=backend.hcl
+
+      - name: Terraform fmt
+        run: terraform fmt -check
+
+      - name: Terraform validate
+        run: terraform validate
+
+      - name: Terraform plan
+        if: github.event_name == 'pull_request'
+        run: terraform plan -input=false
+
+      - name: Terraform apply
+        if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+        run: terraform apply -input=false -auto-approve
