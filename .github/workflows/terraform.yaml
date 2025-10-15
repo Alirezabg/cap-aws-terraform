@@ -6,10 +6,6 @@ on:
     paths:
       - "envs/prod/**"
       - ".github/workflows/terraform.yml"
-  pull_request:
-    branches: [ main ]
-    paths:
-      - "envs/prod/**"
 
 permissions:
   id-token: write   
@@ -41,10 +37,6 @@ jobs:
 
       - name: Terraform validate
         run: terraform validate
-
-      - name: Terraform plan
-        if: github.event_name == 'pull_request'
-        run: terraform plan -input=false
 
       - name: Terraform apply
         if: github.ref == 'refs/heads/main' && github.event_name == 'push'
