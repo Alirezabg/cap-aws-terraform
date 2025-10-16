@@ -5,7 +5,12 @@ on:
     branches: [ main ]
     paths:
       - "envs/prod/**"
-      - ".github/workflows/terraform.yml"
+      - ".github/workflows/terraform.yaml"
+  pull_request:
+    branches: [ main ]
+    paths:
+      - "envs/prod/**"
+      - ".github/workflows/terraform.yaml"
 
 permissions:
   id-token: write   
@@ -21,7 +26,12 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      - name: Terraform init (pull request)
+        if: github.event_name == 'pull_request'
+        run: terraform init -backend=false
+
       - name: Configure AWS credentials (OIDC)
+        if: github.event_name == 'push'
         uses: aws-actions/configure-aws-credentials@v4
         with:
           role-to-assume: arn:aws:iam::895636586366:role/github-oidc-terraform
@@ -33,6 +43,7 @@ jobs:
           terraform_version: 1.9.5
 
       - name: Terraform init
+        if: github.event_name == 'push'
         run: terraform init -backend-config=backend.hcl -reconfigure
 
       - name: Terraform validate
