@@ -16,6 +16,11 @@ module "vpc" {
     "10.10.0.0/19",
     "10.10.32.0/19",
   ]
+  private_subnets = [   
+  "10.10.64.0/19",
+  "10.10.96.0/19",
+]
+
 
   enable_nat_gateway = true
   single_nat_gateway = true  
@@ -27,6 +32,11 @@ module "vpc" {
     "kubernetes.io/cluster/${local.cluster_name}" = "shared"
     "kubernetes.io/role/elb"                      = "1"
   }
+  private_subnet_tags = {
+  "kubernetes.io/cluster/${local.cluster_name}" = "shared"
+  "kubernetes.io/role/internal-elb"             = "1"
+}
+
 
   tags = {
     Project     = "capstone"
