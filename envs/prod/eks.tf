@@ -73,7 +73,6 @@ module "eks" {
   enable_irsa                   = true
   create_cluster_security_group = true
   create_node_security_group    = true
-  manage_aws_auth_configmap     = true
   cluster_addons = {
     kube-proxy = {
       most_recent = true
