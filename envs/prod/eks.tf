@@ -1,7 +1,12 @@
 locals {
-  cluster_name = "cap-test-eks"
+  cluster_name = "${var.project}-${var.environment}-eks"
   vpc_cidr     = "10.10.0.0/16"
   azs          = ["eu-west-2a", "eu-west-2b"]
+  common_tags  = {
+    Project     = var.project
+    Environment = var.environment
+    Terraform   = "true"
+  }
 }
 
 module "vpc" {
@@ -17,14 +22,14 @@ module "vpc" {
     "10.10.32.0/19",
   ]
   map_public_ip_on_launch = true
-  private_subnets = [   
-  "10.10.64.0/19",
-  "10.10.96.0/19",
-]
 
+  private_subnets = [
+    "10.10.64.0/19",
+    "10.10.96.0/19",
+  ]
 
   enable_nat_gateway = false
-  single_nat_gateway = false  
+  single_nat_gateway = false
 
   enable_dns_hostnames = true
   enable_dns_support   = true
@@ -33,17 +38,13 @@ module "vpc" {
     "kubernetes.io/cluster/${local.cluster_name}" = "shared"
     "kubernetes.io/role/elb"                      = "1"
   }
+
   private_subnet_tags = {
-  "kubernetes.io/cluster/${local.cluster_name}" = "shared"
-  "kubernetes.io/role/internal-elb"             = "1"
-}
-
-
-  tags = {
-    Project     = "capstone"
-    Environment = "test"
-    Terraform   = "true"
+    "kubernetes.io/cluster/${local.cluster_name}" = "shared"
+    "kubernetes.io/role/internal-elb"             = "1"
   }
+
+  tags = local.common_tags
 }
 
 module "eks" {
@@ -73,17 +74,14 @@ module "eks" {
         workload = "general"
       }
 
-      tags = {
-        Project     = "capstone"
-        Environment = "test"
-        Terraform   = "true"
-      }
+      tags = local.common_tags
     }
   }
 
   enable_irsa                   = true
   create_cluster_security_group = true
   create_node_security_group    = true
+
   cluster_addons = {
     kube-proxy = {
       most_recent = true
@@ -96,24 +94,5 @@ module "eks" {
     }
   }
 
-  tags = {
-    Project     = "capstone"
-    Environment = "test"
-    Terraform   = "true"
-  }
-}
-
-output "eks_cluster_name" {
-  description = "Name of the EKS cluster."
-  value       = module.eks.cluster_name
-}
-
-output "eks_cluster_endpoint" {
-  description = "API server endpoint for the EKS cluster."
-  value       = module.eks.cluster_endpoint
-}
-
-output "eks_cluster_certificate_authority_data" {
-  description = "Certificate authority data required to authenticate to the cluster."
-  value       = module.eks.cluster_certificate_authority_data
+  tags = local.common_tags
 }
