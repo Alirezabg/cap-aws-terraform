@@ -51,7 +51,7 @@ module "eks" {
   version = "~> 20.8"
 
   cluster_name    = local.cluster_name
-  cluster_version = "1.29"
+  cluster_version = "1.34"
 
   cluster_endpoint_public_access = true
 
@@ -60,12 +60,13 @@ module "eks" {
 
   eks_managed_node_groups = {
     spot_general = {
+      ami_type       = "AL2023_x86_64_STANDARD" 
       instance_types = ["t3.small"]
       capacity_type  = "SPOT"
 
-      desired_size = 1
+      desired_size = 2
       min_size     = 1
-      max_size     = 2
+      max_size     = 3
 
       disk_size = 20
 
