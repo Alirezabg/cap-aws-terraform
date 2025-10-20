@@ -44,7 +44,7 @@ jobs:
 
       - name: Terraform init
         if: github.event_name == 'push'
-        run: terraform init -backend-config=backend.hcl -reconfigure
+        run: terraform init -backend-config=backend.hcl
 
       - name: Terraform validate
         run: terraform validate
