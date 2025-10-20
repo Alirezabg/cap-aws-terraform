@@ -57,10 +57,6 @@ module "eks" {
 
   vpc_id     = module.vpc.vpc_id
   subnet_ids = module.vpc.public_subnets
-  cluster_compute_config = {
-    enabled    = true
-    node_pools = ["general-purpose"]
-  }
   eks_managed_node_groups = {
     spot_general = {
       ami_type       = "AL2023_x86_64_STANDARD" 
